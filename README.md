@@ -50,11 +50,10 @@ A-generative-informed-neuro-symbolic-framework-for-syntactic-ambiguity-resolutio
 │   └── eval_dataset.xlsx       # Unseen held-out evaluation split
 └── models/                     # Checkpoints directory (or HF Hub links)
 
-```bibtex
 @article{shormani2026neurosymbolic,
   title={A Generative-Informed Neuro-Symbolic Framework for Syntactic Ambiguity Resolution in Arabic DPs},
-  author={Damom et al.....Shormani, M. Q.},
+  author={Shormani, M. Q.},
   year={2026},
-  url={[https://github.com/Shormanim/A-generative-informed-neuro-symbolic-framework-for-syntactic-ambiguity-resolution](https://github.com/Shormanim/A-generative-informed-neuro-symbolic-framework-for-syntactic-ambiguity-resolution)}
+  url={https://github.com/Shormanim/A-generative-informed-neuro-symbolic-framework-for-syntactic-ambiguity-resolution}
 }
 ```
