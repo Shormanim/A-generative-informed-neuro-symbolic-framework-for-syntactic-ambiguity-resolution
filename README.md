@@ -1,11 +1,11 @@
-# A Generative-Informed Neuro-Symbolic Framework for Syntactic Ambiguity Resolution
+# A generative-informed neuro-symbolic framework for syntactic ambiguity resolution: Evidence from Arabic DPs
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=flat&logo=pytorch&logoColor=white)](https://pytorch.org/)
 [![Hugging Face Transformers](https://img.shields.io/badge/%F0%9F%A4%97-Transformers-blue)](https://huggingface.org/)
 
-Official repository for the paper: **"A Generative-Informed Neuro-Symbolic Framework for Syntactic Ambiguity Resolution in Arabic DPs and Construct States"**.
+Official repository for the paper: **"A generative-informed neuro-symbolic framework for syntactic ambiguity resolution: Evidence from Arabic DPs"**.
 
 ---
 
