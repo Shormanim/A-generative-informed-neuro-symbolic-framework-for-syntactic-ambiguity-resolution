@@ -1,5 +1,11 @@
 # A generative-informed neuro-symbolic framework for syntactic ambiguity resolution: Evidence from Arabic DPs
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/MShormani/arabert-noun-attachment/blob/main/arabert_noun_attachment.ipynb)
+![Python 3.8+](https://img.shields.io/badge/python-3.8%2B-blue.svg)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+
+Fine-tuning AraBERT (`aubmindlab/bert-base-arabertv02`) for Arabic structural noun-attachment disambiguation using a human-annotated gold corpus.
+
 Fine-tuning AraBERT (`aubmindlab/bert-base-arabertv02`) for Arabic structural noun-attachment disambiguation using a human-annotated gold corpus.
 
 ---
