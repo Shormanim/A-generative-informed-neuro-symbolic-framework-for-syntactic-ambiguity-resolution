@@ -66,8 +66,8 @@ The project expects Excel (`.xlsx`) files containing the following primary colum
 | **Column**              | **Description**                               | **Example**                     |
 | ----------------------- | --------------------------------------------- | ------------------------------- |
 | `sentence`              | Full context sentence in Arabic               | `اعتمدت على كتاب الطالب الكبير` |
-| `head_N1`               | First candidate attachment head ($N_1$)       | `كتاب`                          |
-| `complement_N2`         | Second candidate attachment head ($N_2$)      | `الطالب`                        |
+| `head_N1`               | First candidate $N_1$       | `كتاب`                          |
+| `complement_N2`         | Second candidate $N_2$      | `الطالب`                        |
 | `human_gold_attachment` | Ground-truth attachment label (`N1` or `N2`)* | `N1`                            |
 
 > **Note:** The pipeline automatically looks for `human_gold_attachment` as the ground-truth label, with a fallback to `attachment` if `human_gold_attachment` is not found.
