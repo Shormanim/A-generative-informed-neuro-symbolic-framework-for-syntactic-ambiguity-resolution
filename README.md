@@ -16,9 +16,8 @@ This project implements a sequence classification pipeline for resolving $N_1$ v
 
 - **Text Normalization & Preprocessing:** Arabic text preprocessing using `ArabertPreprocessor` and `Farasa`.
 - **Structured Input Representation:** Formats input candidates as:
-
-```text
-[sentence] [SEP] N1: [head_N1] [SEP] N2: [complement_N2]
+  ```text
+  Input = S [SEP] N1: cN1 [SEP] N2: cN2
 
 ### Core Capabilities
 
