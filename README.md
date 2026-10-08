@@ -6,13 +6,19 @@
 
 Fine-tuning AraBERT (`aubmindlab/bert-base-arabertv02`) for Arabic structural noun-attachment disambiguation using a human-annotated gold corpus.
 
-Fine-tuning AraBERT (`aubmindlab/bert-base-arabertv02`) for Arabic structural noun-attachment disambiguation using a human-annotated gold corpus.
-
 ---
 
 ## 📌 Overview
 
 This project implements a sequence classification pipeline for resolving $N_1$ vs. $N_2$ noun-attachment ambiguities in Arabic sentences. The pipeline combines AraBERT with `ArabertPreprocessor` and `Farasa` preprocessing, representing each instance using the sentence and its candidate attachment heads.
+
+### Core Capabilities
+
+- **Text Normalization & Preprocessing:** Arabic text preprocessing using `ArabertPreprocessor` and `Farasa`.
+- **Structured Input Representation:** Formats input candidates as:
+
+```text
+[sentence] [SEP] N1: [head_N1] [SEP] N2: [complement_N2]
 
 ### Core Capabilities
 
