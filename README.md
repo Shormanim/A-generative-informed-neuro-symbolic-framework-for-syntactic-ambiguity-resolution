@@ -1,59 +1,123 @@
-# A generative-informed neuro-symbolic framework for syntactic ambiguity resolution: Evidence from Arabic DPs
+# AraBERT Noun Attachment Disambiguation
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=flat&logo=pytorch&logoColor=white)](https://pytorch.org/)
-[![Hugging Face Transformers](https://img.shields.io/badge/%F0%9F%A4%97-Transformers-blue)](https://huggingface.org/)
-
-Official repository for the paper: **"A generative-informed neuro-symbolic framework for syntactic ambiguity resolution: Evidence from Arabic DPs"**.
+Fine-tuning AraBERT (`aubmindlab/bert-base-arabertv02`) for Arabic structural noun-attachment disambiguation using a human-annotated gold corpus.
 
 ---
 
 ## 📌 Overview
 
-This repository implements a neuro-symbolic framework for resolving structural syntactic ambiguity in Arabic Determiner Phrases (DPs), including Construct States (*Iḍāfa*), non-Construct States, and coordinated DPs. 
+This project implements a sequence classification pipeline for resolving $N_1$ vs. $N_2$ noun-attachment ambiguities in Arabic sentences. The pipeline combines AraBERT with `ArabertPreprocessor` and `Farasa` preprocessing, representing each instance using the sentence and its candidate attachment heads.
 
-By integrating formal generative primitives (**Merge**, **Agree**, and restricted **Search Space**) with pre-trained Transformer contextual attention mechanisms (**AraBERT**), the framework conditions language models using pre-formulated structural candidates:
+### Core Capabilities
 
-$$\text{Input} = S \mathbin{[\text{SEP}]} \text{N1}: c_{\text{N1}} \mathbin{[\text{SEP}]} \text{N2}: c_{\text{N2}}$$
-
-where:
-* $S$ is the complete preprocessed sentence context.
-* $c_{\text{N1}}$ represents Candidate 1 (High / VP Attachment).
-* $c_{\text{N2}}$ represents Candidate 2 (Low / NP / Embedded Attachment).
-
----
-
-## 📊 Dataset Specifications
-
-The dataset was curated and filtered through a multi-stage verification pipeline from an initial pool of **44,637** raw sentence instances down to a verified human-ground-truth corpus of **6,696** instances:
-
-| Split / Partition | High/VP Attachment ($c_{\text{N1}}$) | Low/NP Attachment ($c_{\text{N2}}$) | Total Instances |
-| :--- | :---: | :---: | :---: |
-| **Human Gold Corpus** | 4,881 (72.89%) | 1,815 (27.11%) | **6,696** |
-
-* Preprocessing applies Farasa-based morphological segmentation via `ArabertPreprocessor`.
-* Maximum input sequence length is set to $128$ tokens.
-
----
-
-## 🛠️ Repository Layout
+* **Text Normalization & Preprocessing:** Arabic text preprocessing using `ArabertPreprocessor` and `Farasa`.
+* **Structured Input Representation:** Formats input candidates as:
 
 ```text
-A-generative-informed-neuro-symbolic-framework-for-syntactic-ambiguity-resolution/
-├── README.md                   # Repository documentation
-├── requirements.txt            # Environment dependencies
-├── code_stage_3.py             # Full end-to-end PyTorch / AraBERT pipeline script
-├── data/
-│   ├── training_dataset.xlsx   # Stratified training split
-│   ├── valid_dataset.xlsx      # Model selection / early stopping split
-│   └── eval_dataset.xlsx       # Unseen held-out evaluation split
-└── models/                     # Checkpoints directory (or HF Hub links)
-
-@article{shormani2026neurosymbolic,
-  title={A Generative-Informed Neuro-Symbolic Framework for Syntactic Ambiguity Resolution in Arabic DPs},
-  author={Shormani, M. Q.},
-  year={2026},
-  url={https://github.com/Shormanim/A-generative-informed-neuro-symbolic-framework-for-syntactic-ambiguity-resolution}
-}
+[sentence] [SEP] N1: [head_N1] [SEP] N2: [complement_N2]
 ```
+
+* **Classification:** AraBERT-based sequence classification.
+* **Evaluation:** Computes Accuracy, Precision, Recall, Binary F1, Weighted F1, classification reports, and confusion matrices.
+
+---
+
+## 📁 Repository Structure
+
+```text
+.
+├── arabert_noun_attachment.ipynb   # Main training and evaluation notebook
+├── training_dataset.xlsx           # Human-annotated training dataset
+├── valid_dataset.xlsx              # Human-annotated validation dataset
+├── eval_dataset.xlsx               # Human-annotated evaluation dataset
+├── requirements.txt                # Project dependencies
+├── LICENSE-MIT                     # Code license
+├── LICENSE-CC-BY-4.0              # Data and documentation license
+└── README.md                       # Project documentation
+```
+
+---
+
+## 🚀 Quick Start
+
+### 1. Install Dependencies
+
+Install the required Python packages using `pip`:
+
+```bash
+pip install -r requirements.txt
+```
+
+Main libraries used in this project include:
+
+* `transformers`
+* `datasets`
+* `arabert`
+* `farasa`
+* `pyarabic`
+* `torch`
+* `scikit-learn`
+* `pandas`
+
+### 2. Dataset Format
+
+The project expects Excel (`.xlsx`) files containing the following primary columns:
+
+| **Column**              | **Description**                               | **Example**                     |
+| ----------------------- | --------------------------------------------- | ------------------------------- |
+| `sentence`              | Full context sentence in Arabic               | `اعتمدت على كتاب الطالب الكبير` |
+| `head_N1`               | First candidate attachment head ($N_1$)       | `كتاب`                          |
+| `complement_N2`         | Second candidate attachment head ($N_2$)      | `الطالب`                        |
+| `human_gold_attachment` | Ground-truth attachment label (`N1` or `N2`)* | `N1`                            |
+
+> **Note:** The pipeline automatically looks for `human_gold_attachment` as the ground-truth label, with a fallback to `attachment` if `human_gold_attachment` is not found.
+
+### 3. Running the Pipeline
+
+Open `arabert_noun_attachment.ipynb` in Google Colab or JupyterLab and run all cells sequentially:
+
+1. **Upload Datasets:** Upload `training_dataset.xlsx`, `valid_dataset.xlsx`, and `eval_dataset.xlsx` when prompted.
+2. **Preprocessing:** Normalize and preprocess Arabic text using `ArabertPreprocessor`.
+3. **Sequence Formatting:** Construct structured input sequences.
+4. **Model Training:** Fine-tune AraBERT using the Hugging Face `Trainer`.
+5. **Evaluation:** Evaluate performance on the evaluation dataset and view detailed classification reports.
+
+---
+
+## 📊 Evaluation Metrics
+
+The pipeline outputs standard evaluation measures:
+
+* **Accuracy**
+* **Precision & Recall**
+* **Binary F1 & Weighted F1**
+* **Per-class Performance ($N_1$ vs. $N_2$)**
+* **Classification Report & Confusion Matrix**
+
+---
+
+## ⚙️ Model Details
+
+| **Parameter**     | **Setting**                             |
+| ----------------- | --------------------------------------- |
+| **Base Model**    | `aubmindlab/bert-base-arabertv02`       |
+| **Learning Rate** | `2e-5`                                  |
+| **Batch Size**    | `32`                                    |
+| **Epochs**        | `4`                                     |
+| **Random Seed**   | `42`                                    |
+| **Framework**     | Hugging Face `Transformers` / `Trainer` |
+
+---
+
+## 🔄 Reproducibility
+
+The repository includes the training, validation, and evaluation datasets, the main Jupyter notebook, and the required dependencies to facilitate full reproduction of the experiments.
+
+---
+
+## 📄 License
+
+* **Code & Notebook:** [MIT License](LICENSE-MIT)
+* **Dataset & Documentation:** [Creative Commons Attribution 4.0 International (CC BY 4.0)](LICENSE-CC-BY-4.0)
+
+The code and notebook are distributed under the MIT License. The dataset and documentation are distributed under the CC BY 4.0 license.
