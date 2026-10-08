@@ -1,4 +1,4 @@
-# AraBERT Noun Attachment Disambiguation
+# A generative-informed neuro-symbolic framework for syntactic ambiguity resolution: Evidence from Arabic DPs
 
 Fine-tuning AraBERT (`aubmindlab/bert-base-arabertv02`) for Arabic structural noun-attachment disambiguation using a human-annotated gold corpus.
 
