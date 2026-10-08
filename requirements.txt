@@ -1,0 +1,10 @@
+torch==2.2.0
+transformers==4.40.0
+datasets==2.18.0
+arabert==1.0.1
+farasa==0.0.7
+pyarabic==0.5.10
+numpy==1.26.4
+pandas==2.2.1
+openpyxl==3.1.2
+scikit-learn==1.4.1
