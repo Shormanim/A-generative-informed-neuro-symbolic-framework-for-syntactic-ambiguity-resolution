@@ -79,8 +79,6 @@ The project expects Excel (`.xlsx`) files containing the following primary colum
 | `complement_N2`         | Second candidate attachment head ($N_2$)     | `الطالب`                        |
 | `human_gold_attachment` | Ground-truth attachment label (`N1` or `N2`) | `N1`                            |
 
-> **Note:** The pipeline checks for `human_gold_attachment` as the ground-truth label and falls back to `attachment` if `human_gold_attachment` is not found.
-
 ### 3. Running Inference & Evaluation
 
 Open `arabert_noun_attachment.ipynb` in Google Colab or JupyterLab and run the cells sequentially:
