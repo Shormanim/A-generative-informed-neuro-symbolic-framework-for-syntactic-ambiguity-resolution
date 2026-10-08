@@ -1,5 +1,7 @@
 # A generative-informed neuro-symbolic framework for syntactic ambiguity resolution: Evidence from Arabic DPs
 
+# A Generative-Informed Neuro-Symbolic Framework for Syntactic Ambiguity Resolution: Evidence from Arabic DPs
+
 ![Python 3.8+](https://img.shields.io/badge/python-3.8%2B-blue.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
@@ -15,13 +17,17 @@ This project implements a sequence classification pipeline for resolving $N_1$ v
 
 * **Text Normalization & Preprocessing:** Arabic text preprocessing using `ArabertPreprocessor` and `Farasa`.
 
-* **Structured Input Representation:** Each instance is formatted as:
+* **Structured Input Representation:** Formats each instance as:
 
   ```text
   Input = S [SEP] N1: cN1 [SEP] N2: cN2
   ```
 
 * **Classification:** AraBERT-based sequence classification for predicting the correct attachment as $N_1$ or $N_2$.
+
+* **Test-Sample Evaluation:** Applies the fine-tuned AraBERT model to a sample dataset (`test_sample.xlsx`) and compares model predictions against human gold annotations.
+
+* **Detailed Metrics:** Computes Accuracy, Precision, Recall, Binary F1, Weighted F1, classification reports, and confusion matrices.
 
 ---
 
@@ -30,6 +36,7 @@ This project implements a sequence classification pipeline for resolving $N_1$ v
 ```text
 .
 ├── arabert_noun_attachment.ipynb   # Main inference and evaluation notebook
+├── test_sample.xlsx                # Sample evaluation dataset for quick testing
 ├── training_dataset.xlsx           # Human-annotated training dataset
 ├── valid_dataset.xlsx              # Human-annotated validation dataset
 ├── eval_dataset.xlsx               # Human-annotated evaluation dataset
@@ -51,48 +58,50 @@ Install the required Python packages using `pip`:
 pip install -r requirements.txt
 ```
 
-### 2. Run the Notebook
+Main libraries used in this project include:
 
-Open `arabert_noun_attachment.ipynb` in Google Colab or JupyterLab and run the cells sequentially.
+* `transformers`
+* `datasets`
+* `arabert`
+* `farasa`
+* `pyarabic`
+* `torch`
+* `scikit-learn`
+* `pandas`
+* `openpyxl`
 
-The notebook:
+### 2. Dataset Format
 
-1. Loads a user-provided `test_sample.xlsx` file.
-2. Preprocesses the Arabic text using `ArabertPreprocessor` and Farasa.
-3. Constructs the structured $N_1$/$N_2$ input representation.
-4. Loads the fine-tuned AraBERT model from Hugging Face:
-   `MShormani/arabert-noun-attachment`
-5. Predicts the attachment class ($N_1$ or $N_2$).
-6. Compares predictions with human gold annotations.
-7. Reports standard classification metrics and a confusion matrix.
+The project expects Excel (`.xlsx`) files containing the following primary columns:
 
----
+| **Column**              | **Description**                              | **Example**                     |
+| ----------------------- | -------------------------------------------- | ------------------------------- |
+| `sentence`              | Full context sentence in Arabic              | `اعتمدت على كتاب الطالب الكبير` |
+| `head_N1`               | First candidate attachment head ($N_1$)      | `كتاب`                          |
+| `complement_N2`         | Second candidate attachment head ($N_2$)     | `الطالب`                        |
+| `human_gold_attachment` | Ground-truth attachment label (`N1` or `N2`) | `N1`                            |
 
-## 📊 Dataset Format
+### 3. Running Inference & Evaluation
 
-The input Excel (`.xlsx`) files use the following primary fields:
+Open `arabert_noun_attachment.ipynb` in Google Colab or JupyterLab and run the cells sequentially:
 
-| **Column**              | **Description**                                              | **Example**                     |
-| ----------------------- | ------------------------------------------------------------ | ------------------------------- |
-| `sentence`              | Full context sentence in Arabic                              | `اعتمدت على كتاب الطالب الكبير` |
-| `head_N1`               | First candidate attachment head ($N_1$)                      | `كتاب`                          |
-| `complement_N2`         | Second candidate attachment head ($N_2$)                     | `الطالب`                        |
-| `human_gold_attachment` | Human-annotated ground-truth attachment label (`N1` or `N2`) | `N1`                            |
-
-The training, validation, and evaluation datasets are included in the repository. For independent testing, users can provide their own `test_sample.xlsx` file following the same structure.
+1. **Upload Dataset:** Upload `test_sample.xlsx` when prompted.
+2. **Preprocessing:** Normalize Arabic text using `ArabertPreprocessor` and Farasa.
+3. **Sequence Formatting:** Construct structured input representations using the $N_1$/$N_2$ candidate format.
+4. **Load Fine-Tuned Model:** Automatically load the fine-tuned AraBERT model from Hugging Face (`MShormani/arabert-noun-attachment`).
+5. **Inference:** Predict the attachment class ($N_1$ or $N_2$) for each instance.
+6. **Evaluation:** Compare predictions against human gold annotations and output Accuracy, Precision, Recall, Binary F1, Weighted F1, classification reports, and a confusion matrix.
 
 ---
 
 ## 📊 Evaluation Metrics
 
-The notebook reports:
+The pipeline outputs standard evaluation measures:
 
 * **Accuracy**
-* **Precision**
-* **Recall**
-* **Binary F1**
-* **Weighted F1**
-* **Per-class performance ($N_1$ vs. $N_2$)**
+* **Precision & Recall**
+* **Binary F1 & Weighted F1**
+* **Per-class Performance ($N_1$ vs. $N_2$)**
 * **Classification Report**
 * **Confusion Matrix**
 
@@ -115,7 +124,7 @@ The notebook reports:
 
 ## 🔄 Reproducibility
 
-The repository provides the training, validation, and evaluation datasets, the inference and evaluation notebook, and the required software dependencies. The fine-tuned model is available through its Hugging Face repository, allowing the trained model to be independently evaluated on additional test samples.
+The repository includes all dataset partitions (`training`, `validation`, and `evaluation`), a dedicated `test_sample.xlsx` for rapid verification, the main notebook, and the required dependencies. The fine-tuned model is referenced through its Hugging Face repository to facilitate reproducibility and independent testing.
 
 ---
 
@@ -123,3 +132,5 @@ The repository provides the training, validation, and evaluation datasets, the i
 
 * **Code & Notebook:** [MIT License](LICENSE-MIT)
 * **Dataset & Documentation:** [Creative Commons Attribution 4.0 International (CC BY 4.0)](LICENSE-CC-BY-4.0)
+
+The code and notebook are distributed under the MIT License. The dataset and documentation are distributed under the CC BY 4.0 license.
