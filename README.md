@@ -14,13 +14,19 @@ This project implements a sequence classification pipeline for resolving $N_1$ v
 
 ### Core Capabilities
 
-- **Text Normalization & Preprocessing:** Arabic text preprocessing using `ArabertPreprocessor` and `Farasa`.
-- **Structured Input Representation:** Formats input candidates as:
+* **Text Normalization & Preprocessing:** Arabic text preprocessing using `ArabertPreprocessor` and `Farasa`.
+
+* **Structured Input Representation:** Formats each instance as:
+
   ```text
   Input = S [SEP] N1: cN1 [SEP] N2: cN2
+  ```
 
-* **Classification:** AraBERT-based sequence classification.
+* **Classification:** AraBERT-based sequence classification for predicting the correct attachment as $N_1$ or $N_2$.
+
 * **Evaluation:** Computes Accuracy, Precision, Recall, Binary F1, Weighted F1, classification reports, and confusion matrices.
+
+* **Test-Sample Inference:** Provides a separate notebook for applying the fine-tuned AraBERT model to a user-provided `test_sample.xlsx` file and comparing predictions against human gold annotations.
 
 ---
 
@@ -28,14 +34,15 @@ This project implements a sequence classification pipeline for resolving $N_1$ v
 
 ```text
 .
-├── arabert_noun_attachment.ipynb   # Main training and evaluation notebook
-├── training_dataset.xlsx           # Human-annotated training dataset
-├── valid_dataset.xlsx              # Human-annotated validation dataset
-├── eval_dataset.xlsx               # Human-annotated evaluation dataset
-├── requirements.txt                # Project dependencies
-├── LICENSE-MIT                     # Code license
-├── LICENSE-CC-BY-4.0              # Data and documentation license
-└── README.md                       # Project documentation
+├── arabert_noun_attachment.ipynb          # Main training and evaluation notebook
+├── test_sample_inference.ipynb            # Test-sample inference and evaluation notebook
+├── training_dataset.xlsx                  # Human-annotated training dataset
+├── valid_dataset.xlsx                     # Human-annotated validation dataset
+├── eval_dataset.xlsx                      # Human-annotated evaluation dataset
+├── requirements.txt                       # Project dependencies
+├── LICENSE-MIT                            # Code license
+├── LICENSE-CC-BY-4.0                     # Data and documentation license
+└── README.md                              # Project documentation
 ```
 
 ---
@@ -60,29 +67,57 @@ Main libraries used in this project include:
 * `torch`
 * `scikit-learn`
 * `pandas`
+* `openpyxl`
 
 ### 2. Dataset Format
 
 The project expects Excel (`.xlsx`) files containing the following primary columns:
 
-| **Column**              | **Description**                               | **Example**                     |
-| ----------------------- | --------------------------------------------- | ------------------------------- |
-| `sentence`              | Full context sentence in Arabic               | `اعتمدت على كتاب الطالب الكبير` |
-| `head_N1`               | First candidate $N_1$       | `كتاب`                          |
-| `complement_N2`         | Second candidate $N_2$      | `الطالب`                        |
-| `human_gold_attachment` | Ground-truth attachment label (`N1` or `N2`)* | `N1`                            |
+| **Column**              | **Description**                              | **Example**                     |
+| ----------------------- | -------------------------------------------- | ------------------------------- |
+| `sentence`              | Full context sentence in Arabic              | `اعتمدت على كتاب الطالب الكبير` |
+| `head_N1`               | First candidate attachment head ($N_1$)      | `كتاب`                          |
+| `complement_N2`         | Second candidate attachment head ($N_2$)     | `الطالب`                        |
+| `human_gold_attachment` | Ground-truth attachment label (`N1` or `N2`) | `N1`                            |
 
-> **Note:** The pipeline automatically looks for `human_gold_attachment` as the ground-truth label, with a fallback to `attachment` if `human_gold_attachment` is not found.
+> **Note:** The pipeline checks for `human_gold_attachment` as the ground-truth label and falls back to `attachment` if `human_gold_attachment` is not found.
 
-### 3. Running the Pipeline
+Additional dataset fields may be present and are retained as metadata where applicable.
 
-Open `arabert_noun_attachment.ipynb` in Google Colab or JupyterLab and run all cells sequentially:
+### 3. Training and Evaluation
+
+Open `arabert_noun_attachment.ipynb` in Google Colab or JupyterLab and run the cells sequentially.
+
+The main notebook performs the following steps:
 
 1. **Upload Datasets:** Upload `training_dataset.xlsx`, `valid_dataset.xlsx`, and `eval_dataset.xlsx` when prompted.
-2. **Preprocessing:** Normalize and preprocess Arabic text using `ArabertPreprocessor`.
-3. **Sequence Formatting:** Construct structured input sequences.
+2. **Preprocessing:** Normalize and preprocess Arabic text using `ArabertPreprocessor` and Farasa.
+3. **Sequence Formatting:** Construct the structured input representation containing the sentence and the two candidate attachment heads.
 4. **Model Training:** Fine-tune AraBERT using the Hugging Face `Trainer`.
-5. **Evaluation:** Evaluate performance on the evaluation dataset and view detailed classification reports.
+5. **Evaluation:** Evaluate the fine-tuned model on the evaluation dataset and generate detailed classification results.
+
+### 4. Test-Sample Inference
+
+The repository also provides a separate notebook for testing the trained model on a separate Excel file:
+
+```text
+test_sample.xlsx
+```
+
+Open `test_sample_inference.ipynb` in Google Colab and upload `test_sample.xlsx` when prompted.
+
+The notebook:
+
+1. Loads the test sample.
+2. Applies the same Arabic preprocessing used by the model.
+3. Formats the input using the same $N_1$/$N_2$ representation.
+4. Loads the **fine-tuned AraBERT model** from the Hugging Face model repository:
+   `MShormani/arabert-noun-attachment`
+5. Predicts the attachment class for each instance.
+6. Compares predictions against `human_gold_attachment`.
+7. Reports Accuracy, Precision, Recall, Binary F1, Weighted F1, a classification report, and a confusion matrix.
+
+The `test_sample.xlsx` file is intended as an independent user-provided test sample and does not need to be included in the repository.
 
 ---
 
@@ -91,29 +126,36 @@ Open `arabert_noun_attachment.ipynb` in Google Colab or JupyterLab and run all c
 The pipeline outputs standard evaluation measures:
 
 * **Accuracy**
-* **Precision & Recall**
-* **Binary F1 & Weighted F1**
+* **Precision**
+* **Recall**
+* **Binary F1**
+* **Weighted F1**
 * **Per-class Performance ($N_1$ vs. $N_2$)**
-* **Classification Report & Confusion Matrix**
+* **Classification Report**
+* **Confusion Matrix**
 
 ---
 
 ## ⚙️ Model Details
 
-| **Parameter**     | **Setting**                             |
-| ----------------- | --------------------------------------- |
-| **Base Model**    | `aubmindlab/bert-base-arabertv02`       |
-| **Learning Rate** | `2e-5`                                  |
-| **Batch Size**    | `32`                                    |
-| **Epochs**        | `4`                                     |
-| **Random Seed**   | `42`                                    |
-| **Framework**     | Hugging Face `Transformers` / `Trainer` |
+| **Parameter**               | **Setting**                             |
+| --------------------------- | --------------------------------------- |
+| **Base Model**              | `aubmindlab/bert-base-arabertv02`       |
+| **Fine-tuned Model**        | `MShormani/arabert-noun-attachment`     |
+| **Learning Rate**           | `2e-5`                                  |
+| **Batch Size**              | `32`                                    |
+| **Epochs**                  | `4`                                     |
+| **Maximum Sequence Length** | `128`                                   |
+| **Random Seed**             | `42`                                    |
+| **Framework**               | Hugging Face `Transformers` / `Trainer` |
 
 ---
 
 ## 🔄 Reproducibility
 
-The repository includes the training, validation, and evaluation datasets, the main Jupyter notebook, and the required dependencies to facilitate full reproduction of the experiments.
+The repository includes the training, validation, and evaluation datasets, the main training/evaluation notebook, the test-sample inference notebook, and the required dependencies to facilitate reproduction of the reported experiments and application of the fine-tuned model to additional test samples.
+
+The training and evaluation workflow uses a fixed random seed (`42`) and a maximum sequence length of `128` tokens.
 
 ---
 
@@ -122,4 +164,4 @@ The repository includes the training, validation, and evaluation datasets, the m
 * **Code & Notebook:** [MIT License](LICENSE-MIT)
 * **Dataset & Documentation:** [Creative Commons Attribution 4.0 International (CC BY 4.0)](LICENSE-CC-BY-4.0)
 
-The code and notebook are distributed under the MIT License. The dataset and documentation are distributed under the CC BY 4.0 license.
+The code and notebooks are distributed under the MIT License. The dataset and documentation are distributed under the CC BY 4.0 license.
