@@ -23,9 +23,9 @@ This project implements a sequence classification pipeline for resolving $N_1$ v
 
 * **Classification:** AraBERT-based sequence classification for predicting the correct attachment as $N_1$ or $N_2$.
 
-* **Evaluation:** Computes Accuracy, Precision, Recall, Binary F1, Weighted F1, classification reports, and confusion matrices.
+* **Test-Sample Evaluation:** Applies the fine-tuned AraBERT model to a sample dataset (`test_sample.xlsx`) and compares model predictions against human gold annotations.
 
-* **Test-Sample Inference:** Provides a separate notebook for applying the fine-tuned AraBERT model to a user-provided `test_sample.xlsx` file and comparing predictions against human gold annotations.
+* **Detailed Metrics:** Computes Accuracy, Precision, Recall, Binary F1, Weighted F1, classification reports, and confusion matrices.
 
 ---
 
@@ -33,15 +33,15 @@ This project implements a sequence classification pipeline for resolving $N_1$ v
 
 ```text
 .
-├── arabert_noun_attachment.ipynb          # Main training and evaluation notebook
-├── test_sample_inference.ipynb            # Test-sample inference and evaluation notebook
-├── training_dataset.xlsx                  # Human-annotated training dataset
-├── valid_dataset.xlsx                     # Human-annotated validation dataset
-├── eval_dataset.xlsx                      # Human-annotated evaluation dataset
-├── requirements.txt                       # Project dependencies
-├── LICENSE-MIT                            # Code license
-├── LICENSE-CC-BY-4.0                     # Data and documentation license
-└── README.md                              # Project documentation
+├── arabert_noun_attachment.ipynb   # Main inference and evaluation notebook
+├── test_sample.xlsx                # Sample evaluation dataset for quick testing
+├── training_dataset.xlsx           # Human-annotated training dataset
+├── valid_dataset.xlsx              # Human-annotated validation dataset
+├── eval_dataset.xlsx               # Human-annotated evaluation dataset
+├── requirements.txt                # Project dependencies
+├── LICENSE-MIT                     # Code license
+├── LICENSE-CC-BY-4.0              # Data and documentation license
+└── README.md                       # Project documentation
 ```
 
 ---
@@ -81,27 +81,26 @@ The project expects Excel (`.xlsx`) files containing the following primary colum
 
 > **Note:** The pipeline checks for `human_gold_attachment` as the ground-truth label and falls back to `attachment` if `human_gold_attachment` is not found.
 
-Additional dataset fields may be present and are retained as metadata where applicable.
-
 ### 3. Running Inference & Evaluation
 
 Open `arabert_noun_attachment.ipynb` in Google Colab or JupyterLab and run the cells sequentially:
 
 1. **Upload Dataset:** Upload `test_sample.xlsx` when prompted.
 2. **Preprocessing:** Normalize Arabic text using `ArabertPreprocessor` and Farasa.
-3. **Sequence Formatting:** Construct structured input representations ($N_1$/$N_2$).
-4. **Load Weights:** Automatically fetches fine-tuned weights from Hugging Face (`MShormani/arabert-noun-attachment`).
-5. **Evaluation:** Outputs Accuracy, Precision, Recall, Binary F1, Weighted F1, classification reports, and confusion matrices.
+3. **Sequence Formatting:** Construct structured input representations using the $N_1$/$N_2$ candidate format.
+4. **Load Fine-Tuned Model:** Automatically load the fine-tuned AraBERT model from Hugging Face (`MShormani/arabert-noun-attachment`).
+5. **Inference:** Predict the attachment class ($N_1$ or $N_2$) for each instance.
+6. **Evaluation:** Compare predictions against human gold annotations and output Accuracy, Precision, Recall, Binary F1, Weighted F1, classification reports, and a confusion matrix.
+
+---
 
 ## 📊 Evaluation Metrics
 
 The pipeline outputs standard evaluation measures:
 
 * **Accuracy**
-* **Precision**
-* **Recall**
-* **Binary F1**
-* **Weighted F1**
+* **Precision & Recall**
+* **Binary F1 & Weighted F1**
 * **Per-class Performance ($N_1$ vs. $N_2$)**
 * **Classification Report**
 * **Confusion Matrix**
@@ -125,9 +124,7 @@ The pipeline outputs standard evaluation measures:
 
 ## 🔄 Reproducibility
 
-The repository includes the training, validation, and evaluation datasets, the main training/evaluation notebook, the test-sample inference notebook, and the required dependencies to facilitate reproduction of the reported experiments and application of the fine-tuned model to additional test samples.
-
-The training and evaluation workflow uses a fixed random seed (`42`) and a maximum sequence length of `128` tokens.
+The repository includes all dataset partitions (`training`, `validation`, and `evaluation`), a dedicated `test_sample.xlsx` for rapid verification, the main notebook, and the required dependencies. The fine-tuned model is referenced through its Hugging Face repository to facilitate reproducibility and independent testing.
 
 ---
 
@@ -136,4 +133,4 @@ The training and evaluation workflow uses a fixed random seed (`42`) and a maxim
 * **Code & Notebook:** [MIT License](LICENSE-MIT)
 * **Dataset & Documentation:** [Creative Commons Attribution 4.0 International (CC BY 4.0)](LICENSE-CC-BY-4.0)
 
-The code and notebooks are distributed under the MIT License. The dataset and documentation are distributed under the CC BY 4.0 license.
+The code and notebook are distributed under the MIT License. The dataset and documentation are distributed under the CC BY 4.0 license.
