@@ -83,42 +83,15 @@ The project expects Excel (`.xlsx`) files containing the following primary colum
 
 Additional dataset fields may be present and are retained as metadata where applicable.
 
-### 3. Training and Evaluation
+### 3. Running Inference & Evaluation
 
-Open `arabert_noun_attachment.ipynb` in Google Colab or JupyterLab and run the cells sequentially.
+Open `arabert_noun_attachment.ipynb` in Google Colab or JupyterLab and run the cells sequentially:
 
-The main notebook performs the following steps:
-
-1. **Upload Datasets:** Upload `training_dataset.xlsx`, `valid_dataset.xlsx`, and `eval_dataset.xlsx` when prompted.
-2. **Preprocessing:** Normalize and preprocess Arabic text using `ArabertPreprocessor` and Farasa.
-3. **Sequence Formatting:** Construct the structured input representation containing the sentence and the two candidate attachment heads.
-4. **Model Training:** Fine-tune AraBERT using the Hugging Face `Trainer`.
-5. **Evaluation:** Evaluate the fine-tuned model on the evaluation dataset and generate detailed classification results.
-
-### 4. Test-Sample Inference
-
-The repository also provides a separate notebook for testing the trained model on a separate Excel file:
-
-```text
-test_sample.xlsx
-```
-
-Open `test_sample_inference.ipynb` in Google Colab and upload `test_sample.xlsx` when prompted.
-
-The notebook:
-
-1. Loads the test sample.
-2. Applies the same Arabic preprocessing used by the model.
-3. Formats the input using the same $N_1$/$N_2$ representation.
-4. Loads the **fine-tuned AraBERT model** from the Hugging Face model repository:
-   `MShormani/arabert-noun-attachment`
-5. Predicts the attachment class for each instance.
-6. Compares predictions against `human_gold_attachment`.
-7. Reports Accuracy, Precision, Recall, Binary F1, Weighted F1, a classification report, and a confusion matrix.
-
-The `test_sample.xlsx` file is intended as an independent user-provided test sample and does not need to be included in the repository.
-
----
+1. **Upload Dataset:** Upload `test_sample.xlsx` when prompted.
+2. **Preprocessing:** Normalize Arabic text using `ArabertPreprocessor` and Farasa.
+3. **Sequence Formatting:** Construct structured input representations ($N_1$/$N_2$).
+4. **Load Weights:** Automatically fetches fine-tuned weights from Hugging Face (`MShormani/arabert-noun-attachment`).
+5. **Evaluation:** Outputs Accuracy, Precision, Recall, Binary F1, Weighted F1, classification reports, and confusion matrices.
 
 ## 📊 Evaluation Metrics
 
